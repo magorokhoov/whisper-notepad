@@ -1,0 +1,28 @@
+{
+  "name": "whisper-notepad",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Offline browser dictation notepad powered by Whisper (sherpa-onnx, CPU).",
+  "license": "MIT",
+  "keywords": [
+    "whisper",
+    "speech-to-text",
+    "dictation",
+    "sherpa-onnx",
+    "offline",
+    "russian",
+    "nodejs"
+  ],
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "start": "node server.mjs --open",
+    "start:no-open": "node server.mjs"
+  },
+  "dependencies": {
+    "sherpa-onnx-node": "1.13.8",
+    "ws": "^8.18.0"
+  }
+}

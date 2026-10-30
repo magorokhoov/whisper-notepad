@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0f1115" />
+    <title>Whisper-блокнот — офлайн-диктовка</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="page-glow" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M6 16h3M11 10v12M16 6v20M21 11v10M26 14v4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>Whisper-блокнот</h1>
+          <p>офлайн-диктовка · русский + English</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <span id="connectionPill" class="pill pill-muted">
+          <span class="pill-dot"></span>
+          <span id="connectionText">Подключение…</span>
+        </span>
+        <span id="modelPill" class="pill pill-warn">
+          <span class="pill-dot"></span>
+          <span id="modelPillText">Модель…</span>
+        </span>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="card editor">
+        <div class="record-bar">
+          <button id="recordBtn" class="record-btn" type="button" disabled>
+            <span class="record-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="1.8" />
+                <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M9 21h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span id="recordLabel">Слушать</span>
+          </button>
+
+          <div class="live">
+            <div class="live-line">
+              <span id="stateDot" class="state-dot"></span>
+              <span id="stateText">Загружаю модель…</span>
+            </div>
+            <div class="level-track" aria-hidden="true">
+              <div id="levelBar" class="level-bar"></div>
+            </div>
+          </div>
+
+          <div id="timer" class="timer">00:00</div>
+        </div>
+
+        <div class="notepad-wrap">
+          <textarea
+            id="notepad"
+            spellcheck="true"
+            autocomplete="off"
+            placeholder="Нажмите «Слушать» и говорите. Текст появится после паузы — его можно сразу редактировать."
+          ></textarea>
+        </div>
+
+        <div class="editor-foot">
+          <div class="stats">
+            <span id="stats">0 слов · 0 символов</span>
+            <span id="latency" class="latency"></span>
+          </div>
+          <div class="actions">
+            <button id="copyBtn" class="btn btn-ghost" type="button">Копировать</button>
+            <button id="clearBtn" class="btn btn-ghost btn-danger" type="button">Очистить</button>
+            <button id="saveTxtBtn" class="btn btn-primary" type="button">Скачать .txt</button>
+            <button id="saveMdBtn" class="btn" type="button">.md</button>
+          </div>
+        </div>
+
+        <p id="draftNote" class="draft-note">Черновик автоматически сохраняется в браузере.</p>
+      </section>
+
+      <aside class="sidebar">
+        <section class="card panel">
+          <h2>Модель</h2>
+          <label class="field">
+            <span>Папка модели</span>
+            <input id="modelPath" type="text" spellcheck="false" autocomplete="off" placeholder="small, medium, large или абсолютный путь" />
+          </label>
+          <button id="loadModelBtn" class="btn btn-block" type="button">Загрузить модель</button>
+          <p id="modelInfo" class="hint">Модель загружается…</p>
+        </section>
+
+        <section class="card panel">
+          <h2>Распознавание</h2>
+
+          <label class="field">
+            <span>Язык</span>
+            <select id="language">
+              <option value="ru">Русский + English</option>
+              <option value="en">English</option>
+              <option value="auto">Автоопределение</option>
+            </select>
+          </label>
+
+          <label class="field range-field">
+            <span class="range-head">Пауза, закрывающая фразу <b id="silenceValue">0,9 с</b></span>
+            <input id="silence" type="range" min="400" max="2000" step="100" value="900" />
+          </label>
+
+          <label class="field range-field">
+            <span class="range-head">Чувствительность микрофона <b id="sensitivityValue">55%</b></span>
+            <input id="sensitivity" type="range" min="0" max="100" step="5" value="55" />
+          </label>
+
+          <label class="field">
+            <span>Потоков CPU</span>
+            <input id="threads" type="number" min="1" max="16" step="1" value="8" />
+          </label>
+
+          <p class="hint">При смене языка или числа потоков модель перезагружается.</p>
+        </section>
+
+        <section class="card panel">
+          <h2>Очередь</h2>
+          <div class="queue-line">
+            <span id="queueCount">Нет фраз</span>
+            <span id="queueTime" class="queue-time"></span>
+          </div>
+          <div class="queue-note">
+            Medium на CPU обрабатывает примерно <b>1,5 секунды на секунду речи</b>. Текст
+            появляется после паузы, а не мгновенно; при длинной речи без пауз очередь растёт.
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="foot">
+      <span>Whisper Medium · sherpa-onnx · всё считается локально</span>
+      <span>Аудио никуда не отправляется</span>
+    </footer>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <noscript>
+      <p style="padding: 24px">Для работы блокнота нужен JavaScript.</p>
+    </noscript>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
