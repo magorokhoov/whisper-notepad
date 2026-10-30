@@ -13,6 +13,8 @@ supported out of the box.
 > simply wanted a simple dictation notepad that turns speech into text after natural
 > pauses.
 
+![Whisper Notepad interface](docs/screenshot.png)
+
 ## Features
 
 - Automatic silence detection: each phrase is recognized when you pause.
