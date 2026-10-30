@@ -1,3 +1,7 @@
+EN / RU
+
+Russian is below
+
 # Whisper Notepad
 
 A minimal local dictation notepad: speak, pause, and the text appears in an editable
